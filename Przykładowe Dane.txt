@@ -1,0 +1,88 @@
+SET IDENTITY_INSERT [dbo].[Adresy] ON 
+
+INSERT [dbo].[Adresy] ([IDAdresu], [Miasto], [Ulica], [KodPocztowy], [NrDomu], [NrMieszkania]) 
+VALUES (1, N'Cieszyn', N'Głęboka', 43400, 12, 2)
+INSERT [dbo].[Adresy] ([IDAdresu], [Miasto], [Ulica], [KodPocztowy], [NrDomu], [NrMieszkania]) 
+VALUES (2, N'Cieszyn', N'Zamkowa', 43400, 3, 1)
+INSERT [dbo].[Adresy] ([IDAdresu], [Miasto], [Ulica], [KodPocztowy], [NrDomu], [NrMieszkania]) 
+VALUES (3, N'Bielsko-Biała', N'Górska', 43300, 28, NULL)
+INSERT [dbo].[Adresy] ([IDAdresu], [Miasto], [Ulica], [KodPocztowy], [NrDomu], [NrMieszkania]) 
+VALUES (4, N'Bielsko-Biała', N'Cieszyńska', 43300, 33, 3)
+INSERT [dbo].[Adresy] ([IDAdresu], [Miasto], [Ulica], [KodPocztowy], [NrDomu], [NrMieszkania]) 
+VALUES (5, N'Cieszyn', N'Bielska', 43400, 23, 8)
+INSERT [dbo].[Adresy] ([IDAdresu], [Miasto], [Ulica], [KodPocztowy], [NrDomu], [NrMieszkania]) 
+VALUES (6, N'Bielsko-Biała', N'Piastowska', 43300, 52, 6)
+SET IDENTITY_INSERT [dbo].[Adresy] OFF
+SET IDENTITY_INSERT [dbo].[Czytelnicy] ON 
+
+INSERT [dbo].[Czytelnicy] ([IDCzytelnika], [IDAdresu], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [Pracownik], [DataWpisuCzytelnika], [MaksymalnaLiczbaWypozyczen], [Status]) 
+VALUES (1, 1, N'Aleksandra', N'Domaniewska', CAST(0xFEFD0A00 AS Date), N'Kobieta', N'564102003', 1, CAST(0x65320B00 AS Date), 50, N'Aktywny')
+INSERT [dbo].[Czytelnicy] ([IDCzytelnika], [IDAdresu], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [Pracownik], [DataWpisuCzytelnika], [MaksymalnaLiczbaWypozyczen], [Status]) 
+VALUES (2, 1, N'Maksymilian', N'Domaniewski', CAST(0xD2FC0A00 AS Date), N'Mężczyzna', N'546201300', 0, CAST(0x6F320B00 AS Date), 15, N'Aktywny')
+INSERT [dbo].[Czytelnicy] ([IDCzytelnika], [IDAdresu], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [Pracownik], [DataWpisuCzytelnika], [MaksymalnaLiczbaWypozyczen], [Status]) 
+VALUES (3, 6, N'Jarosław', N'Małoważny', CAST(0x0D090B00 AS Date), N'Mężczyzna', N'645982341', 0, CAST(0x073A0B00 AS Date), 15, N'Aktywny')
+INSERT [dbo].[Czytelnicy] ([IDCzytelnika], [IDAdresu], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [Pracownik], [DataWpisuCzytelnika], [MaksymalnaLiczbaWypozyczen], [Status]) 
+VALUES (4, 2, N'Bożydar', N'Kwiatek', CAST(0xBAFB0A00 AS Date), N'Mężczyzna', N'509100300', 1, CAST(0x473B0B00 AS Date), 50, N'Aktywny')
+INSERT [dbo].[Czytelnicy] ([IDCzytelnika], [IDAdresu], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [Pracownik], [DataWpisuCzytelnika], [MaksymalnaLiczbaWypozyczen], [Status]) 
+VALUES (5, 3, N'Zofia', N'Kołaczkowska', CAST(0xC20E0B00 AS Date), N'Kobieta', N'654395862', 1, CAST(0xEF3D0B00 AS Date), 50, N'Aktywny')
+INSERT [dbo].[Czytelnicy] ([IDCzytelnika], [IDAdresu], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [Pracownik], [DataWpisuCzytelnika], [MaksymalnaLiczbaWypozyczen], [Status]) 
+VALUES (6, 4, N'Małgorzata', N'Biniarska', CAST(0x1D310B00 AS Date), N'Kobieta', NULL, 0, CAST(0xC53A0B00 AS Date), 15, N'Aktywny')
+INSERT [dbo].[Czytelnicy] ([IDCzytelnika], [IDAdresu], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [Pracownik], [DataWpisuCzytelnika], [MaksymalnaLiczbaWypozyczen], [Status]) 
+VALUES (7, 5, N'Kacper', N'Nieistotny', CAST(0x2F280B00 AS Date), N'Mężczyzna', N'603205402', 0, CAST(0xD2310B00 AS Date), 15, N'Aktywny')
+SET IDENTITY_INSERT [dbo].[Czytelnicy] OFF
+SET IDENTITY_INSERT [dbo].[Kary] ON 
+
+INSERT [dbo].[Kary] ([IDKary], [IDWypozyczenia], [DataRozpoczeciaNaliczania], [WartoscNaliczona]) 
+VALUES (1, 5, CAST(0xB6400B00 AS Date), 11.5000)
+SET IDENTITY_INSERT [dbo].[Kary] OFF
+SET IDENTITY_INSERT [dbo].[Kategorie] ON 
+
+INSERT [dbo].[Kategorie] ([IDKategorii], [Nazwa]) 
+VALUES (1, N'Thriller')
+INSERT [dbo].[Kategorie] ([IDKategorii], [Nazwa]) 
+VALUES (2, N'Fantasy')
+INSERT [dbo].[Kategorie] ([IDKategorii], [Nazwa]) 
+VALUES (3, N'Lektura Szkolna')
+INSERT [dbo].[Kategorie] ([IDKategorii], [Nazwa]) 
+VALUES (4, N'Literatura Popularnonaukowa')
+SET IDENTITY_INSERT [dbo].[Kategorie] OFF
+SET IDENTITY_INSERT [dbo].[Ksiazki] ON 
+
+INSERT [dbo].[Ksiazki] ([IDKsiazki], [IDKategorii], [Tytul], [Autor], [Opis], [AdresWydawniczy], [Stan], [Ubytek], [DataUbytku]) 
+VALUES (1, 2, N'Miecz Przeznaczenia', N'Andrzej Sapkowski', N'Drugi tom słynnej sagi Wiedźmin.', N'	Warszawa : "SuperNOWA", 2004.', N'Dostępna', 0, NULL)
+INSERT [dbo].[Ksiazki] ([IDKsiazki], [IDKategorii], [Tytul], [Autor], [Opis], [AdresWydawniczy], [Stan], [Ubytek], [DataUbytku]) 
+VALUES (2, 3, N'Chłopcy z Placu Broni', N'Ferenc Molnár', N'"Chłopcy z Placu Broni" to powieść zaliczana do klasyki literatury dziecięcej i młodzieżowej.', N'Warszawa : "Nasza Księgarnia", 2006.', N'Wypożyczona', 0, NULL)
+INSERT [dbo].[Ksiazki] ([IDKsiazki], [IDKategorii], [Tytul], [Autor], [Opis], [AdresWydawniczy], [Stan], [Ubytek], [DataUbytku]) 
+VALUES (3, 1, N'Pancerne Serce', N'Jo Nesbo', N'Po rozwiązaniu sprawy Bałwana, która dotknęła w tak koszmarny sposób najbliższych Harry''ego, komisarz Hole porzuca pracę i wyjeżdża do Hongkongu.', N'Wrocław : Wydaw. Dolnośl., 2010.', N'Dostępna', 0, NULL)
+INSERT [dbo].[Ksiazki] ([IDKsiazki], [IDKategorii], [Tytul], [Autor], [Opis], [AdresWydawniczy], [Stan], [Ubytek], [DataUbytku]) 
+VALUES (4, 4, N'Sapiens : od zwierząt do bogów', N'Yuval Noah Harari', N'Jak powstał człowiek? Czy rzeczywiście pochodzimy od małp, czy może zostaliśmy stworzeni przez Boga w piątym dniu tygodnia? Jaka jest geneza powstania gatunku homo sapiens? Odpowiedzi na te pytania szukaj w książce Yuvala Noaha Harari.', N'Warszawa : Dom Wydawniczy PWN, 2017.', N'Do odbioru', 0, NULL)
+SET IDENTITY_INSERT [dbo].[Ksiazki] OFF
+SET IDENTITY_INSERT [dbo].[Pracownicy] ON 
+
+INSERT [dbo].[Pracownicy] ([IDPracownika], [Przelozony], [IDAdresu], [Funkcja], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [DataZatrudnienia]) 
+VALUES (8, 8, 1, N'Kierownik', N'Aleksandra', N'Domaniewska', CAST(0xFEFD0A00 AS Date), N'Kobieta', N'564102003', CAST(0x65320B00 AS Date))
+INSERT [dbo].[Pracownicy] ([IDPracownika], [Przelozony], [IDAdresu], [Funkcja], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [DataZatrudnienia]) 
+VALUES (9, 8, 2, N'Bibliotekarz', N'Bożydar', N'Kwiatek', CAST(0xBAFB0A00 AS Date), N'Mężczyzna', N'509100300', CAST(0x473B0B00 AS Date))
+INSERT [dbo].[Pracownicy] ([IDPracownika], [Przelozony], [IDAdresu], [Funkcja], [Imie], [Nazwisko], [DataUrodzenia], [Plec], [Telefon], [DataZatrudnienia]) 
+VALUES (10, 8, 3, N'Bibliotekarz', N'Zofia', N'Kołaczkowska', CAST(0xC20E0B00 AS Date), N'Kobieta', N'654395862', CAST(0xEF3D0B00 AS Date))
+SET IDENTITY_INSERT [dbo].[Pracownicy] OFF
+SET IDENTITY_INSERT [dbo].[Rezerwacje] ON 
+
+INSERT [dbo].[Rezerwacje] ([IDRezerwacji], [IDCzytelnika], [IDKsiazki], [DataPoczatkuRezerwacji], [DataZakonczeniaRezerwacji]) 
+VALUES (1, 7, 2, CAST(0x08410B00 AS Date), NULL)
+INSERT [dbo].[Rezerwacje] ([IDRezerwacji], [IDCzytelnika], [IDKsiazki], [DataPoczatkuRezerwacji], [DataZakonczeniaRezerwacji]) 
+VALUES (2, 2, 4, CAST(0x0C410B00 AS Date), NULL)
+SET IDENTITY_INSERT [dbo].[Rezerwacje] OFF
+SET IDENTITY_INSERT [dbo].[Wypozyczenia] ON 
+
+INSERT [dbo].[Wypozyczenia] ([IDWypozyczenia], [IDCzytelnika], [IDKsiazki], [IDPracownika], [DataWypozyczenia], [DataZwrotu], [Stan]) 
+VALUES (3, 3, 1, 9, CAST(0xFC400B00 AS Date), CAST(0x11410B00 AS Date), N'Dobry')
+INSERT [dbo].[Wypozyczenia] ([IDWypozyczenia], [IDCzytelnika], [IDKsiazki], [IDPracownika], [DataWypozyczenia], [DataZwrotu], [Stan]) 
+VALUES (4, 6, 2, 9, CAST(0xFC400B00 AS Date), NULL, NULL)
+INSERT [dbo].[Wypozyczenia] ([IDWypozyczenia], [IDCzytelnika], [IDKsiazki], [IDPracownika], [DataWypozyczenia], [DataZwrotu], [Stan]) 
+VALUES (5, 7, 1, 8, CAST(0x98400B00 AS Date), CAST(0xCC400B00 AS Date), N'Dobry')
+INSERT [dbo].[Wypozyczenia] ([IDWypozyczenia], [IDCzytelnika], [IDKsiazki], [IDPracownika], [DataWypozyczenia], [DataZwrotu], [Stan]) 
+VALUES (6, 5, 3, 10, CAST(0x08410B00 AS Date), CAST(0x19410B00 AS Date), N'Dobry')
+INSERT [dbo].[Wypozyczenia] ([IDWypozyczenia], [IDCzytelnika], [IDKsiazki], [IDPracownika], [DataWypozyczenia], [DataZwrotu], [Stan]) 
+VALUES (7, 4, 4, 9, CAST(0x0A410B00 AS Date), CAST(0x1B410B00 AS Date), N'Dobry')
+SET IDENTITY_INSERT [dbo].[Wypozyczenia] OFF

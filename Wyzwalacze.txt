@@ -1,0 +1,76 @@
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TRIGGER [dbo].[tg_SprawdzTelefon] ON [dbo].[Pracownicy]
+INSTEAD OF INSERT 
+AS
+BEGIN
+DECLARE @Telefon nvarchar(10);
+SET @Telefon = (SELECT Telefon FROM inserted)
+
+BEGIN
+	IF(@Telefon IS NOT NULL and LEN(@Telefon) != 9)
+	BEGIN
+		RAISERROR('Niepoprawny numer telefonu', 14,1)
+		RETURN;
+	END
+	ELSE
+	BEGIN
+		INSERT INTO dbo.Pracownicy (Przelozony, IDAdresu, Funkcja, Imie, Nazwisko, 
+		DataUrodzenia, Plec, Telefon, DataZatrudnienia)
+		SELECT Przelozony, IDAdresu, Funkcja, Imie, Nazwisko, 
+			DataUrodzenia, Plec, Telefon, DataZatrudnienia FROM inserted
+	END
+END
+END
+
+GO
+
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TRIGGER [dbo].[tg_Verify] ON [dbo].[Wypozyczenia]
+INSTEAD OF INSERT 
+AS 
+BEGIN 
+DECLARE @IloscWypKsiazek int,
+		@IDCzytelnika int,
+		@Pracownik bit,
+		@Status nvarchar(20);
+SET	@IDCzytelnika = (SELECT IDCzytelnika FROM inserted)
+SET @Status = (SELECT Status FROM dbo.Czytelnicy WHERE IDCzytelnika = @IDCzytelnika)
+SET @Pracownik = (SELECT Pracownik FROM dbo.Czytelnicy WHERE IDCzytelnika = @IDCzytelnika ) 
+SET @IloscWypKsiazek = ( SELECT COUNT(IDKsiazki) FROM dbo.Wypozyczenia
+						 WHERE IDCzytelnika = @IDCzytelnika and DataZwrotu IS NULL)
+
+BEGIN 
+	IF(@Status = 'Zablokowane')
+	BEGIN
+		RAISERROR('Konto tego czytelnika jest zablokowane. Aby mógł wypożyczać książki, odblokuj jego konto.', 14,1)
+		RETURN;
+	END
+	IF(@Pracownik = 1 and @IloscWypKsiazek > 50)
+	BEGIN 
+		RAISERROR('Osiągnięto Maksymalną Ilość Wypożyczonych Książek.',14,1)
+		RETURN;
+	END
+	IF(@Pracownik = 0 and @IloscWypKsiazek > 15)
+	BEGIN
+		RAISERROR('Osiągnięto Maksymalną Ilość Wypożyczonych Książek.',14,1)
+		RETURN;
+	END
+	ELSE
+	BEGIN
+		INSERT INTO dbo.Wypozyczenia (IDCzytelnika, IDKsiazki, IDPracownika, DataWypozyczenia, DataZwrotu, Stan)
+		SELECT IDCzytelnika, IDKsiazki, IDPracownika, DataWypozyczenia, DataZwrotu, Stan FROM inserted
+	END
+	END
+END
+GO
+USE [master]
+GO
+ALTER DATABASE [WypożyczalniaKsiążek] SET  READ_WRITE 
+GO

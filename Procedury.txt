@@ -1,0 +1,339 @@
+USE [WypożyczalniaKsiążek]
+GO
+/****** Object:  StoredProcedure [dbo].[spAdresy_Insert]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spAdresy_Insert]
+	@IDAdresu int = 0 output,
+	@Miasto nvarchar(50),
+	@Ulica nvarchar(50),
+	@KodPocztowy int,
+	@NrDomu int,
+	@NrMieszkania int
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+	INSERT INTO dbo.Adresy(Miasto, Ulica, KodPocztowy, NrDomu, NrMieszkania)
+	VALUES (@Miasto, @Ulica, @KodPocztowy, @NrDomu, @NrMieszkania)
+
+	SELECT @IDAdresu = SCOPE_IDENTITY();
+    
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[spCzytelnicy_Insert]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spCzytelnicy_Insert]
+	@IDCzytelnika int = 0 output,
+	@IDAdresu int,
+	@Imie nvarchar(30),
+	@Nazwisko nvarchar(50),
+	@DataUrodzenia date,
+	@Plec nvarchar(10),
+	@Telefon nvarchar(10),
+	@Pracownik bit,
+	@DataWpisuCzytelnika date,
+	@MaksymalnaLiczbaWypozyczen int,
+	@Status nvarchar(20)
+AS
+BEGIN
+	SET NOCOUNT ON;
+
+    INSERT INTO dbo.Czytelnicy (IDAdresu, Imie, Nazwisko, DataUrodzenia, Plec, Telefon, 
+								Pracownik, DataWpisuCzytelnika, MaksymalnaLiczbaWypozyczen, Status)
+	VALUES (@IDAdresu, @Imie, @Nazwisko, @DataUrodzenia, @Plec, @Telefon,
+			@Pracownik, GETDATE(), @MaksymalnaLiczbaWypozyczen, @Status)
+
+	SELECT @IDCzytelnika = SCOPE_IDENTITY();
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[spKategorie_Insert]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spKategorie_Insert]
+	@IDKategorii int = 0 output,
+	@Nazwa nvarchar(50)
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+
+	INSERT INTO dbo.Kategorie (Nazwa)
+	VALUES (@Nazwa)
+
+	SELECT @IDKategorii = SCOPE_IDENTITY();
+
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[spKsiazki_Insert]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spKsiazki_Insert]
+	@IDKsiazki int = 0 output,
+	@IDKategorii int,
+	@Tytul nvarchar(50),
+	@Autor nvarchar(50),
+	@Opis nvarchar(500),
+	@AdresWydawniczy nvarchar(150),
+	@Stan nvarchar(30),
+	@Ubytek bit,
+	@DataUbytku date
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+
+	INSERT INTO dbo.Ksiazki (IDKategorii, Tytul, Autor, Opis, AdresWydawniczy, Stan, Ubytek, DataUbytku)
+	VALUES (@IDKategorii, @Tytul, @Autor, @Opis, @AdresWydawniczy, @Stan, @Ubytek, @DataUbytku)
+
+	SELECT @IDKsiazki = SCOPE_IDENTITY();
+
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[spLiczenieKar]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spLiczenieKar]
+	@IDKary int = 0 output,
+	@IDWypozyczenia int
+AS
+BEGIN
+DECLARE @DataWypozyczenia date
+DECLARE @DataRozpoczeciaNaliczania date
+DECLARE @Kara money
+DECLARE @WartoscNaliczona money
+SET @DataWypozyczenia = (SELECT DataWypozyczenia FROM dbo.Wypozyczenia WHERE IDWypozyczenia = @IDWypozyczenia and DataZwrotu IS NULL)
+SET @DataRozpoczeciaNaliczania = DATEADD(day,30,@DataWypozyczenia)
+SET @Kara = 0.50
+SET @WartoscNaliczona = (DATEDIFF(day,@DataRozpoczeciaNaliczania,GETDATE())*@Kara)
+	
+BEGIN
+	IF((DATEDIFF(day,@DataWypozyczenia,GETDATE()) > 30 ))
+	BEGIN
+		INSERT INTO dbo.Kary (IDWypozyczenia, DataRozpoczeciaNaliczania, WartoscNaliczona)
+		VALUES (@IDWypozyczenia, @DataRozpoczeciaNaliczania, @WartoscNaliczona)
+
+		SELECT @IDKary = SCOPE_IDENTITY();
+
+	END	
+
+END    
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[spPracownicy_Insert]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spPracownicy_Insert]
+	@IDPracownika int = 0 output,
+	@Przelozony int,
+	@IDAdresu int,
+	@Funkcja nvarchar(50),
+	@Imie nvarchar(30),
+	@Nazwisko nvarchar(50),
+	@DataUrodzenia date,
+	@Plec nvarchar(10),
+	@Telefon nvarchar(10),
+	@DataZatrudnienia date
+AS
+BEGIN
+	
+	SET NOCOUNT ON;
+
+	INSERT INTO dbo.Pracownicy (Przelozony, IDAdresu, Funkcja, Imie, Nazwisko,
+								DataUrodzenia, Plec, Telefon, DataZatrudnienia)
+	VALUES (@Przelozony, @IDAdresu, @Funkcja, @Imie, @Nazwisko, @DataUrodzenia, @Plec,
+			@Telefon, GETDATE())
+
+	SELECT @IDPracownika = SCOPE_IDENTITY();
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[spRezerwacje_Insert]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spRezerwacje_Insert]
+	@IDRezerwacji int = 0 output,
+	@IDCzytelnika int,
+	@IDKsiazki int
+AS
+BEGIN
+DECLARE @IDKsiazkiRezerwowanej int,
+		@IDCzytelnikaRezerwujacego int,
+		@IDKsiazkiWypozyczonej int
+SET @IDKsiazkiRezerwowanej = (SELECT IDKsiazki FROM dbo.Rezerwacje)
+SET @IDCzytelnikaRezerwujacego = (SELECT IDCzytelnika FROM dbo.Rezerwacje)
+SET @IDKsiazkiWypozyczonej = (SELECT IDKsiazki FROM dbo.Wypozyczenia)
+
+BEGIN
+	IF(@IDKsiazki != @IDKsiazkiWypozyczonej)
+	BEGIN
+		RAISERROR('Nie można zarezerwować niewypożyczonej książki!',14,1)
+		RETURN;
+	END
+	IF(@IDKsiazki = @IDKsiazkiRezerwowanej and @IDCzytelnika != @IDCzytelnikaRezerwujacego)
+	BEGIN
+		RAISERROR('Ta książka już jest zarezerwowana',14,1)
+		RETURN;
+	END
+	IF(@IDKsiazki = @IDKsiazkiRezerwowanej and @IDCzytelnika = @IDCzytelnikaRezerwujacego)
+	BEGIN
+		RAISERROR('Już zarezerwowałeś tą książkę', 14,1)
+		RETURN;
+	END
+	ELSE
+	BEGIN
+	INSERT INTO dbo.Rezerwacje (IDCzytelnika, IDKsiazki, DataPoczatkuRezerwacji)
+	VALUES (@IDCzytelnika, @IDKsiazki, GETDATE())
+	
+	SELECT @IDRezerwacji = SCOPE_IDENTITY();
+
+	UPDATE dbo.Ksiazki
+	SET Stan = 'Rezerwacja'
+	WHERE IDKsiazki = @IDKsiazki
+	END
+END
+END
+GO
+/****** Object:  StoredProcedure [dbo].[spWypozyczenia_Insert]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spWypozyczenia_Insert]
+	@IDWypozyczenia int = 0 output,
+	@IDCzytelnika int,
+	@IDKsiazki int,
+	@IDPracownika int
+	
+AS
+BEGIN
+DECLARE @IDKsiazkiRezerwowanej int
+DECLARE	@IDCzytelnikaRezerwujacego int
+DECLARE @IloscWypozyczonych int
+SET @IloscWypozyczonych = (SELECT COUNT(IDKsiazki) FROM dbo.Wypozyczenia WHERE IDKsiazki = @IDKsiazki and DataZwrotu IS NULL)
+SET @IDKsiazkiRezerwowanej = (SELECT TOP 1 IDKsiazki FROM dbo.Rezerwacje WHERE DataZakonczeniaRezerwacji IS NULL)
+SET @IDCzytelnikaRezerwujacego = (SELECT IDCzytelnika FROM dbo.Rezerwacje WHERE DataZakonczeniaRezerwacji IS NULL and IDKsiazki = @IDKsiazki)
+
+
+BEGIN	
+	IF(@IloscWypozyczonych != 0)
+	BEGIN
+		RAISERROR('Ta książka jest aktualnie wypożyczona',14,1)
+		RETURN;
+	END
+	IF(@IDCzytelnika != @IDCzytelnikaRezerwujacego)
+	BEGIN
+		RAISERROR('Ta książka jest zarezerwowana przez kogoś innego',14,1)
+		RETURN;
+	END
+	IF(@IDKsiazki = @IDKsiazkiRezerwowanej and @IDCzytelnika = @IDCzytelnikaRezerwujacego)
+	BEGIN
+		INSERT INTO dbo.Wypozyczenia (IDCzytelnika, IDKsiazki, IDPracownika, DataWypozyczenia)
+		VALUES (@IDCzytelnika, @IDKsiazki, @IDPracownika, GETDATE())
+
+		SELECT @IDWypozyczenia = SCOPE_IDENTITY();
+
+		UPDATE dbo.Ksiazki
+		SET Stan = 'Wypożyczona'
+		WHERE IDKsiazki = @IDKsiazki
+
+		UPDATE dbo.Rezerwacje
+		SET DataZakonczeniaRezerwacji = GETDATE()
+		WHERE IDKsiazki = @IDKsiazki
+	END
+	ELSE
+	BEGIN
+		INSERT INTO dbo.Wypozyczenia (IDCzytelnika, IDKsiazki, IDPracownika, DataWypozyczenia)
+		VALUES (@IDCzytelnika, @IDKsiazki, @IDPracownika, GETDATE())
+
+		SELECT @IDWypozyczenia = SCOPE_IDENTITY();
+
+		UPDATE dbo.Ksiazki
+		SET Stan = 'Wypożyczona'
+		WHERE IDKsiazki = @IDKsiazki
+
+	END
+
+END
+END
+
+GO
+/****** Object:  StoredProcedure [dbo].[spWypozyczenia_Update]    Script Date: 26.05.2020 23:40:30 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[spWypozyczenia_Update]
+	@IDWypozyczenia int,
+	@IDKsiazki int,
+	@Stan nvarchar(50)
+AS
+BEGIN
+DECLARE @RezerwowanaKsiazka int
+DECLARE @Wypozyczenie int
+DECLARE @Kara money
+SET @RezerwowanaKsiazka = (SELECT IDKsiazki FROM dbo.Rezerwacje WHERE DataZakonczeniaRezerwacji IS NULL and IDKsiazki = @IDKsiazki)
+SET @Wypozyczenie = (SELECT IDWypozyczenia FROM dbo.Kary WHERE IDWypozyczenia = @IDWypozyczenia)
+SET @Kara = (SELECT WartoscNaliczona FROM dbo.Kary WHERE IDWypozyczenia = @IDWypozyczenia)
+BEGIN
+	IF(@RezerwowanaKsiazka = @IDKsiazki)
+	BEGIN
+		UPDATE dbo.Rezerwacje
+		SET DataZakonczeniaRezerwacji = GETDATE()
+		WHERE IDKsiazki = @IDKsiazki
+
+		UPDATE dbo.Ksiazki
+		SET Stan = 'Do odbioru'
+		WHERE IDKsiazki = @IDKsiazki
+
+		UPDATE dbo.Wypozyczenia
+		SET DataZwrotu = GETDATE(), Stan = @Stan
+		WHERE IDWypozyczenia = @IDWypozyczenia
+		RETURN;
+	END
+	IF(@Wypozyczenie = @IDWypozyczenia)
+	BEGIN
+		PRINT('Książka oddana po terminie! Należy zapłacić kare:')
+		PRINT(@Kara)
+		
+		UPDATE dbo.Wypozyczenia
+		SET DataZwrotu = GETDATE(), Stan = @Stan
+		WHERE IDWypozyczenia = @IDWypozyczenia
+
+		UPDATE dbo.Ksiazki
+		SET Stan = 'Dostępna'
+		WHERE IDKsiazki = @IDKsiazki
+	END
+	ELSE
+	BEGIN
+		UPDATE dbo.Wypozyczenia
+		SET DataZwrotu = GETDATE(), Stan = @Stan
+		WHERE IDWypozyczenia = @IDWypozyczenia
+
+		UPDATE dbo.Ksiazki
+		SET Stan = 'Dostępna'
+		WHERE IDKsiazki = @IDKsiazki
+	END
+END
+END
+GO
